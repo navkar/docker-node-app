@@ -33,8 +33,8 @@ ad8a240e2757   naveen/my-node-app:1.0   "docker-entrypoint.s…"   23 seconds ag
 
 ## references
 
-[nodejs-docker-webapp](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/#dockerignore-file)
-[Generate the SBOM for Docker images](https://docs.docker.com/engine/sbom/)
+* [nodejs-docker-webapp](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/#dockerignore-file)
+* [Generate the SBOM for Docker images](https://docs.docker.com/engine/sbom/)
 
 ### Docker sbom (software bill of materials)
 
