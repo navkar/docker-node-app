@@ -30,3 +30,7 @@ HundredMillion:node-image navkar$ docker ps
 CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                    NAMES
 ad8a240e2757   naveen/my-node-app:1.0   "docker-entrypoint.s…"   23 seconds ago   Up 22 seconds   0.0.0.0:7777->8080/tcp   vibrant_borg
 ```
+
+## references
+
+[nodejs-docker-webapp](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/#dockerignore-file)
