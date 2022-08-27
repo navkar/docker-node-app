@@ -105,6 +105,49 @@ $ docker network inspect bridge
 
 ```
 
+### docker network assignment
+
+![docker-network-assignment](/images/network-assignment.png)
+
+#### assignment
+
+```
+Create a bridge network called frontend that will be publicly accessible.
+Create a second bridge network called localhost that will be internal.
+Deploy a MySQL container called database that will use the localhost network. Use the mysql 5.7 image:
+
+    Use the -e flag to set MYSQL_ROOT_PASSWORD to "P4ssW0rd0!".
+    The MySQL container should run in the background.
+
+Next, deploy a second container called frontend-app. Connect it to the frontend network using the --network flag. Use the latest Nginx image. The Nginx container should run in the background.
+
+Once the Nginx container is created, connect it to the localhost network.
+```
+
+
+```bash
+$ docker network create frontend
+db0a0b0ae92039fadfc803629ea8e302f5188e39ae8c12208578f4132dcf3610
+$ docker network inspect frontend
+
+$ docker network create localhost --internal
+53460452e090a192f9f39eba0377609c0fa9e01dc57cc1e66d6af2028a68f004
+
+$ docker container run -d --name database --network localhost -e MYSQL_ROOT_PASSWORD=P4ssW0rd0! mysql:5.7
+$ docker container ls
+CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS          PORTS     NAMES
+eb3c772c2d92   mysql:5.7   "docker-entrypoint.s…"   12 seconds ago   Up 11 seconds             database
+
+$ docker container run -d --name=frontend-app --network frontend nginx
+
+$ docker container lsCONTAINER ID   IMAGE       COMMAND                  CREATED         STATUS         PORTS     NAMES
+2f99394fcd18   nginx       "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes   80/tcp    frontend-app
+eb3c772c2d92   mysql:5.7   "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes             database
+
+$ docker network connect localhost frontend-app
+
+$ docker container inspect frontend-app
+```
 
 ## references
 
@@ -172,13 +215,3 @@ arn:aws:s3:::com.myidjoey.az103
 ```
 
 
-## docker network assignment
-
-[docker-network-assignment](/images/network-assignment.png)
-
-1. First create 2 networks 
-
-
-```bash
-
-```
