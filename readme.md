@@ -149,6 +149,40 @@ $ docker network connect localhost frontend-app
 $ docker container inspect frontend-app
 ```
 
+## docker storage
+
+Use a volume for persistent data (Volumes are first-class citizens)
+
+1. Create the volume.
+1. Create your container.
+
+##### Third party drivers
+
+1. Block storage
+2. File storage
+3. Object storage - AWS S3, OpenStack swift
+
+```bash
+$ docker volume ls
+DRIVER    VOLUME NAME
+
+$ docker volume create naveen-new-volume
+naveen-new-volume
+
+$ docker volume inspect naveen-new-volume
+[
+    {
+        "CreatedAt": "2022-08-27T14:29:33Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/naveen-new-volume/_data",
+        "Name": "naveen-new-volume",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+```
+
 ## references
 
 * [nodejs-docker-webapp](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/#dockerignore-file)
