@@ -181,7 +181,67 @@ $ docker volume inspect naveen-new-volume
         "Scope": "local"
     }
 ]
+
+$ docker volume create vol04 --label location=austin --label region=east
+
+$ docker volume inspect vol04
+[
+    {
+        "CreatedAt": "2022-08-27T15:38:42Z",
+        "Driver": "local",
+        "Labels": {
+            "location": "austin",
+            "region": "east"
+        },
+        "Mountpoint": "/var/lib/docker/volumes/vol04/_data",
+        "Name": "vol04",
+        "Options": {},
+        "Scope": "local"
+    }
+]
 ```
+
+### Bind mounts 
+
+Bind to a local directory on the host.
+
+[bind-mounts](https://docs.docker.com/storage/bind-mounts/)
+
+Consider a case where you have a directory source and that when you build the source code, the artifacts are saved into another directory, source/target/. You want the artifacts to be available to the container at /app/, and you want the container to get access to a new build each time you build the source on your development host. Use the following command to bind-mount the target/ directory into your container at /app/. Run the command from within the source directory. The $(pwd) sub-command expands to the current working directory on Linux or macOS hosts
+
+```bash
+$ mkdir bind_target
+
+$ docker container run -d --name=nginx-bind-mount --mount type=bind,source="$(pwd)"/bind_target,target=/app nginx
+
+$ docker container inspect nginx-bind-mount
+   "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/Users/navkar/source/repos/dockerize/node-image/bind_target",
+                "Destination": "/app",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+
+```
+
+#### Use a bind mount with compose
+
+```yaml
+version: "3.9"
+services:
+  frontend:
+    image: node:lts
+    volumes:
+      - type: bind
+        source: ./static
+        target: /opt/app/staticvolumes:
+  myapp:
+```
+
 
 ## references
 
