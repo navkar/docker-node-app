@@ -201,6 +201,30 @@ $ docker volume inspect vol04
 ]
 ```
 
+##### Create a new volume to store nginx html files
+
+```bash
+$ docker volume create nginx-vol01
+$ docker container run -d --name nginx-shared --mount type=volume,source=nginx-vol01,target=/usr/share/nginx/html/ nginx
+8083fdc6cb7d7e83f428acebad51a07c8ebb32a9dd5171af8bc98cc0ebc5085c
+
+$ docker container inspect nginx-shared
+  "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "nginx-vol01",
+                "Source": "/var/lib/docker/volumes/nginx-vol01/_data",
+                "Destination": "/usr/share/nginx/html",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ]
+
+
+```
+
 ### Bind mounts 
 
 Bind to a local directory on the host.
@@ -226,6 +250,25 @@ $ docker container inspect nginx-bind-mount
             }
         ],
 
+
+
+```
+
+Go inside the container and create a new folder. This new folder must appear on the bind mount on the host machine.
+
+```bash
+$ docker container exec -it nginx-bind-mount /bin/bash
+root@bd2315c2d769:/# pwd
+/
+root@bd2315c2d769:/# ls 
+app  boot  docker-entrypoint.d	 etc   lib    media  opt   root  sbin  sys  usr
+bin  dev   docker-entrypoint.sh  home  lib64  mnt    proc  run	 srv   tmp  var
+root@bd2315c2d769:/# cd app
+root@bd2315c2d769:/app# ls -l
+total 0
+-rw-r--r-- 1 root root 0 Aug 27 16:20 naveen.txt
+-rw-r--r-- 1 root root 0 Aug 27 16:20 this-is-good.txt
+root@bd2315c2d769:/app# touch another-file-from-inside-the-container.txt
 ```
 
 #### Use a bind mount with compose
