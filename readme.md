@@ -161,11 +161,24 @@ Tested 2 projects, no vulnerable paths were found.
 
 ```
 
+```
 docker image inspect nginx
 
 docker containers --help
 
 docker logs 8c802a5f2680
 
-
 arn:aws:s3:::com.myidjoey.az103
+```
+
+
+## docker network assignment
+
+[docker-network-assignment](/images/network-assignment.png)
+
+1. First create 2 networks 
+
+
+```bash
+
+```
