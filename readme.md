@@ -335,6 +335,33 @@ services:
 docker container exec -u 0 -it test-build /bin/bash
 ```
 
+## Portainer
+
+* https://www.portainer.io/
+
+```bash
+$ docker container run -d --name portainer -p 8080:9000 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
+```
+
+## docker-compose (docker-compose.yml)
+
+```bash
+$ docker-compose --version
+docker-compose version 1.29.2, build 5becea4
+
+$ docker-compose build --no-cache
+
+$ docker-compose up -d
+$ docker-compose ps
+$ docker-compose start
+$ docker-compose stop
+$ docker-compose down
+```
+
+
+
+
+
 ## references
 
 * [nodejs-docker-webapp](https://nodejs.org/en/docs/guides/nodejs-docker-webapp/#dockerignore-file)
