@@ -239,5 +239,6 @@ eksctl get nodegroup --cluster CLUSTERNAME
 eksctl scale nodegroup --cluster CLUSTERNAME --name NODEGROUPNAME --nodes NEWSIZE
 ```
 
-* 
+#### Stackoverflow
+
 * [how-to-stop-aws-eks-worker-instances](https://stackoverflow.com/questions/57048728/how-to-stop-aws-eks-worker-instances)
