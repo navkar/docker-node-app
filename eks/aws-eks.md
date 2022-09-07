@@ -12,117 +12,108 @@ Note that us-east-1 can experience capacity issues in certain Availability Zones
 
 ## Step 1: Create an IAM User with Admin Permissions
 
-```
-    Navigate to IAM > Users.
-    Click Add user.
-    Set the following values:
-        User name: k8-admin
-        Access type: Programmatic access
-    Click Next: Permissions.
-    Select Attach existing policies directly.
-    Select AdministratorAccess.
-    Click Next: Tags > Next: Review.
-    Click Create user.
-    Copy the access key ID and secret access key, and paste them into a text file, as we'll need them in the next step.
-```
+* Navigate to IAM > Users. Click Add user.
+* Set the following values:
+    User name: `k8-admin`
+    Access type: Programmatic access
+* Click Next: Permissions.
+* Select Attach existing policies directly.
+* Select AdministratorAccess.
+* Click Next: Tags > Next: Review.
+* Click `Create User`.
+* Copy the `access key ID` and `secret access key`, and paste them into a text file, as we'll need them in the next step.
 
 ## Step 2: Launch an EC2 Instance and Configure the Command Line Tools
 
-```
+* Navigate to EC2 > Instances. Click Launch Instance.
 
-    Navigate to EC2 > Instances.
+* On the AMI page, select the Amazon Linux 2 AMI.
 
-    Click Launch Instance.
+* Leave `t2.micro` selected, and click Next: Configure Instance Details.
 
-    On the AMI page, select the Amazon Linux 2 AMI.
+* On the Configure Instance Details page:
+    Network: Leave default
+    Subnet: Leave default
+    Auto-assign Public IP: Enable
 
-    Leave t2.micro selected, and click Next: Configure Instance Details.
+* Click Next: Add Storage > Next: Add Tags > Next: Configure Security Group.
 
-    On the Configure Instance Details page:
-        Network: Leave default
-        Subnet: Leave default
-        Auto-assign Public IP: Enable
+* Click Review and Launch, and then Launch.
 
-    Click Next: Add Storage > Next: Add Tags > Next: Configure Security Group.
+* In the key pair dialog, select Create a new key pair.
 
-    Click Review and Launch, and then Launch.
+* Give it a Key pair name of "mynvkp".
 
-    In the key pair dialog, select Create a new key pair.
+* Click Download Key Pair, and then Launch Instances.
 
-    Give it a Key pair name of "mynvkp".
+* Click View Instances, and give it a few minutes to enter the running state.
 
-    Click Download Key Pair, and then Launch Instances.
+* Once the instance is fully created, check the checkbox next to it and click Connect at the top of the window.
 
-    Click View Instances, and give it a few minutes to enter the running state.
+* In the Connect to your instance dialog, select EC2 Instance Connect (browser-based SSH connection).
 
-    Once the instance is fully created, check the checkbox next to it and click Connect at the top of the window.
+* Click Connect.
 
-    In the Connect to your instance dialog, select EC2 Instance Connect (browser-based SSH connection).
+In the command line window, check the AWS CLI version:
+`aws --version`
 
-    Click Connect.
+It should be an older version.
 
-    In the command line window, check the AWS CLI version:
-    aws --version
+Download v2:
+`curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"`
 
-    It should be an older version.
+Unzip the file:
+`unzip awscliv2.zip`
 
-    Download v2:
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+Checkout examples: `aws/dist/examples/*`
 
-    Unzip the file:
-    unzip awscliv2.zip
-   
-    Checkout examples: `aws/dist/examples/*`
-  
-    See where the current AWS CLI is installed:
-    which aws
+See where the current AWS CLI is installed:
+`which aws`
 
-    It should be /usr/bin/aws.
+It should be `/usr/bin/aws`.
 
-    Update it:
-    sudo ./aws/install --bin-dir /usr/bin --install-dir /usr/bin/aws-cli --update
+Update it:
+`sudo ./aws/install --bin-dir /usr/bin --install-dir /usr/bin/aws-cli --update`
 
-    Check the version of AWS CLI:
-    aws --version
+Check the version of AWS CLI:
+`aws --version`
 
-    It should now be updated.
+It should now be updated.
 
-    Configure the CLI:
-    aws configure
+Configure the CLI:
+`aws configure`
 
-    For AWS Access Key ID, paste in the access key ID you copied earlier.
+For AWS Access Key ID, paste in the access key ID you copied earlier.
 
-    For AWS Secret Access Key, paste in the secret access key you copied earlier.
+For AWS Secret Access Key, paste in the secret access key you copied earlier.
 
-    For Default region name, enter us-east-1.
+For Default region name, enter `us-east-1`.
 
-    For Default output format, enter json.
+For Default output format, enter `json`.
 
-    Download kubectl:
-    curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl
+Download kubectl:
+`curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl`
 
-    Apply execute permissions to the binary:
-    chmod +x ./kubectl
+Apply execute permissions to the binary:
+`chmod +x ./kubectl`
 
-    Copy the binary to a directory in your path:
-    mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+Copy the binary to a directory in your path:
+`mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin`
 
-    Ensure kubectl is installed:
-    kubectl version --short --client
+Ensure kubectl is installed:
+`kubectl version --short --client`
 
-    Download eksctl:
-    curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+Download eksctl:
+`curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp`
 
-    Move the extracted binary to /usr/bin:
-    sudo mv /tmp/eksctl /usr/bin
+Move the extracted binary to /usr/bin:
+`sudo mv /tmp/eksctl /usr/bin`
 
-    Get the version of eksctl:
-    eksctl version
+Get the version of eksctl:
+`eksctl version`
 
-    See the options with eksctl:
-    eksctl help
-
-```
+See the options with eksctl:
+`eksctl help`
 
 ## Step 3: Provision an EKS Cluster
 
@@ -269,7 +260,7 @@ Click Actions > Instance State > Stop.
 
 * Copy the external DNS Hostname listed in the output.
 
-* Access the application using the load balancer, replacing <LOAD_BALANCER_DNS_HOSTNAME> with the DNS Hostname you just copied: curl "<LOAD_BALANCER_EXTERNAL_IP>"
+* Access the application using the load balancer, replacing <LOAD_BALANCER_DNS_HOSTNAME> with the DNS Hostname you just copied: `curl "<LOAD_BALANCER_EXTERNAL_IP>"`
 
 * We should see the Nginx web page HTML again. (If you don't, wait a few more minutes.)
 
@@ -279,6 +270,21 @@ Click Actions > Instance State > Stop.
 
 * `eksctl delete cluster dev`
 
+## Scaling down to zero
+
+Use the following command: 
+
+`eksctl scale nodegroup --cluster dev --name standard-workers --nodes 0 --nodes-max 1 --nodes-min 0`
+
+### Observe the results
+
+```bash
+$ eksctl scale nodegroup --cluster dev --name standard-workers --nodes 0 --nodes-max 1 --nodes-min 0
+2022-09-07 12:01:46 [ℹ]  scaling nodegroup "standard-workers" in cluster dev
+2022-09-07 12:01:47 [ℹ]  waiting for scaling of nodegroup "standard-workers" to complete
+2022-09-07 12:02:17 [ℹ]  nodegroup successfully scaled
+```
+
 ## References
 
 ```bash
@@ -287,5 +293,5 @@ eksctl get nodegroup --cluster CLUSTERNAME
 eksctl scale nodegroup --cluster CLUSTERNAME --name NODEGROUPNAME --nodes NEWSIZE
 ```
 
-* `eksctl scale nodegroup --cluster dev --name standard-workers --nodes 0 --nodes-max 1 --nodes-min 0`
+* 
 * [how-to-stop-aws-eks-worker-instances](https://stackoverflow.com/questions/57048728/how-to-stop-aws-eks-worker-instances)
