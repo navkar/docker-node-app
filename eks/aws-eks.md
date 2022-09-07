@@ -222,13 +222,26 @@ Use the following command:
 
 `eksctl scale nodegroup --cluster dev --name standard-workers --nodes 0 --nodes-max 1 --nodes-min 0`
 
-### Observe the results
+#### Results
 
 ```bash
 $ eksctl scale nodegroup --cluster dev --name standard-workers --nodes 0 --nodes-max 1 --nodes-min 0
 2022-09-07 12:01:46 [ℹ]  scaling nodegroup "standard-workers" in cluster dev
 2022-09-07 12:01:47 [ℹ]  waiting for scaling of nodegroup "standard-workers" to complete
 2022-09-07 12:02:17 [ℹ]  nodegroup successfully scaled
+```
+
+## Scaling up to 3 nodes
+
+`eksctl scale nodegroup --cluster dev --name standard-workers --nodes 3 --nodes-max 4 --nodes-min 1`
+
+#### Results
+
+```bash
+$ eksctl scale nodegroup --cluster dev --name standard-workers --nodes 3 --nodes-max 4 --nodes-min 1
+2022-09-07 20:17:02 [ℹ]  scaling nodegroup "standard-workers" in cluster dev
+2022-09-07 20:17:03 [ℹ]  waiting for scaling of nodegroup "standard-workers" to complete
+2022-09-07 20:17:33 [ℹ]  nodegroup successfully scaled
 ```
 
 ## References
