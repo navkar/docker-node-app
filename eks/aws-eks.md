@@ -126,23 +126,18 @@ Note that `us-east-1` can experience capacity issues in certain Availability Zon
 
     Click the Logging tab (under Configuration), where we'll see the control plane logging info.
         The control plane is abstracted — we can only interact with it using the command line utilities or the console. It’s not an EC2 instance we can log into and start running Linux commands on.
-
-    Navigate to EC2 > Instances, where you should see the instances have been launched.
-
-    Close out of the existing CLI window, if you still have it open.
-
-    Select the original t2.micro instance, and click Connect at the top of the window.
-
-    In the Connect to your instance dialog, select EC2 Instance Connect (browser-based SSH connection).
-
-    Click Connect.
-
-    In the CLI, check the cluster:
-    eksctl get cluster
-
-    Enable it to connect to our cluster:
-    `aws eks update-kubeconfig --name dev --region us-east-1`
 ```
+
+#### AWS EC2 Instances
+
+* Navigate to EC2 > Instances, where you should see the instances have been launched.
+* Close out of the existing CLI window, if you still have it open.
+* Select the original t2.micro instance, and click Connect at the top of the window.
+* In the Connect to your instance dialog, select EC2 Instance Connect (browser-based SSH connection).
+* Click Connect.
+* In the CLI, check the cluster: `eksctl get cluster`
+* Enable it to connect to our cluster: `aws eks update-kubeconfig --name dev --region us-east-1`
+
 
 ## Step 4: Create a Deployment on Your EKS Cluster
 
@@ -152,42 +147,31 @@ Note that `us-east-1` can experience capacity issues in certain Availability Zon
 
 * Change directory: `cd Course_EKS-Basics`
 
-* Take a look at the deployment file:
-cat nginx-deployment.yaml
+* Take a look at the deployment file: `cat nginx-deployment.yaml`
 
-Take a look at the service file:
-cat nginx-svc.yaml
+* Take a look at the service file: `cat nginx-svc.yaml`
 
-Create the service:
-kubectl apply -f ./nginx-svc.yaml
+* Create the service: `kubectl apply -f ./nginx-svc.yaml`
 
-Check its status:
-kubectl get service
+* Check its status: `kubectl get service`
 
-Copy the external DNS hostname of the load balancer, and paste it into a text file, as we'll need it in a minute.
+* Copy the external DNS hostname of the load balancer, and paste it into a text file, as we'll need it in a minute.
 
-Create the deployment:
-kubectl apply -f ./nginx-deployment.yaml
+* Create the deployment: `kubectl apply -f ./nginx-deployment.yaml`
 
-Check its status:
-kubectl get deployment
+* Check its status: `kubectl get deployment`
 
-View the pods:
-kubectl get pod
+* View the pods: `kubectl get pod`
 
-View the ReplicaSets:
-kubectl get rs
+* View the ReplicaSets: `kubectl get rs`
 
-View the nodes:
-kubectl get node
+* View the nodes: `kubectl get node`
 
-Access the application using the load balancer, replacing <LOAD_BALANCER_DNS_HOSTNAME> with the IP you copied earlier (it might take a couple of minutes to update):
-curl "<LOAD_BALANCER_DNS_HOSTNAME>"
+* Access the application using the load balancer, replacing <LOAD_BALANCER_DNS_HOSTNAME> with the IP you copied earlier (it might take a couple of minutes to update): `curl "<LOAD_BALANCER_DNS_HOSTNAME>"`
 
-The output should be the HTML for a default Nginx web page.
+* The output should be the HTML for a default Nginx web page.
 
-In a new browser tab, navigate to the same IP, where we should then see the same Nginx web page.
-
+* In a new browser tab, navigate to the same IP, where we should then see the same Nginx web page.
 
 ## Test the High Availability Features of Your EKS Cluster
 
