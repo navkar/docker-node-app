@@ -8,9 +8,7 @@ Elastic Kubernetes Service (EKS) is a fully managed Kubernetes service from AWS.
 
 Note that us-east-1 can experience capacity issues in certain Availability Zones. Since the AZ numbering (lettering) system differs between AWS accounts we cannot exclude that AZ from the lab steps. If you do experience an UnsupportedAvailabilityZoneException error regarding capacity in a particular zone, you can add the --zones switch to eksctl create cluster and specify three AZs which do not include the under-capacity zone. For example, 
 
-```bash
-eksctl create cluster --name dev --region us-east-1 --zones=us-east-1a,us-east-1b,us-east-1d --nodegroup-name standard-workers --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed
-```
+`eksctl create cluster --name dev --region us-east-1 --zones=us-east-1a,us-east-1b,us-east-1d --nodegroup-name standard-workers --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed`
 
 ## Step 1: Create an IAM User with Admin Permissions
 
@@ -240,56 +238,46 @@ eksctl create cluster --name dev --region us-east-1 --nodegroup-name standard-wo
 
 ## Test the High Availability Features of Your EKS Cluster
 
-```
-    In the AWS console, on the EC2 instances page, select the three `t3.medium` instances.
+* In the AWS console, on the EC2 instances page, select the three `t3.medium` instances.
+Click Actions > Instance State > Stop.
 
-    Click Actions > Instance State > Stop.
+* In the dialog, click Yes, Stop.
 
-    In the dialog, click Yes, Stop.
+* After a few minutes, we should see EKS launching new instances to keep our service running.
 
-    After a few minutes, we should see EKS launching new instances to keep our service running.
+* In the CLI, check the status of our nodes: `kubectl get node`
 
-    In the CLI, check the status of our nodes:
-    kubectl get node
+* All the nodes should be down (i.e., display a NotReady status).
 
-    All the nodes should be down (i.e., display a NotReady status).
+* Check the pods: `kubectl get pod`
 
-    Check the pods:
-    `kubectl get pod`
+* We'll see a few different statuses — Terminating, Running, and Pending — because, as the instances shut down, EKS is trying to restart the pods.
 
-    We'll see a few different statuses — Terminating, Running, and Pending — because, as the instances shut down, EKS is trying to restart the pods.
+* Check the nodes again: `kubectl get node`
 
-    Check the nodes again:
-    `kubectl get node`
+* We should see a new node, which we can identify by its age.
 
-    We should see a new node, which we can identify by its age.
+* Wait a few minutes, and then check the nodes again: `kubectl get node`
 
-    Wait a few minutes, and then check the nodes again:
-    `kubectl get node`
+* We should have one in a Ready state.
 
-    We should have one in a Ready state.
+* Check the pods again: `kubectl get pod`
 
-    Check the pods again:
-    `kubectl get pod`
+* We should see a couple pods are now running as well.
 
-    We should see a couple pods are now running as well.
+* Check the service status: `kubectl get service`
 
-    Check the service status:
-    kubectl get service
+* Copy the external DNS Hostname listed in the output.
 
-    Copy the external DNS Hostname listed in the output.
+* Access the application using the load balancer, replacing <LOAD_BALANCER_DNS_HOSTNAME> with the DNS Hostname you just copied: curl "<LOAD_BALANCER_EXTERNAL_IP>"
 
-    Access the application using the load balancer, replacing <LOAD_BALANCER_DNS_HOSTNAME> with the DNS Hostname you just copied:
-    curl "<LOAD_BALANCER_EXTERNAL_IP>"
+* We should see the Nginx web page HTML again. (If you don't, wait a few more minutes.)
 
-    We should see the Nginx web page HTML again. (If you don't, wait a few more minutes.)
+* In a new browser tab, navigate to the same IP, where we should again see the Nginx web page.
 
-    In a new browser tab, navigate to the same IP, where we should again see the Nginx web page.
+## Delete the entire cluster
 
-    In the CLI, delete everything:
-    `eksctl delete cluster dev`
-
-```
+* `eksctl delete cluster dev`
 
 ## References
 
