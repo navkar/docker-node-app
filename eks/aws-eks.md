@@ -290,3 +290,14 @@ eksctl create cluster --name dev --region us-east-1 --nodegroup-name standard-wo
     `eksctl delete cluster dev`
 
 ```
+
+## References
+
+```bash
+eksctl get cluster
+eksctl get nodegroup --cluster CLUSTERNAME
+eksctl scale nodegroup --cluster CLUSTERNAME --name NODEGROUPNAME --nodes NEWSIZE
+```
+
+* `eksctl scale nodegroup --cluster dev --name standard-workers --nodes 0 --nodes-max 1 --nodes-min 0`
+* [how-to-stop-aws-eks-worker-instances](https://stackoverflow.com/questions/57048728/how-to-stop-aws-eks-worker-instances)
