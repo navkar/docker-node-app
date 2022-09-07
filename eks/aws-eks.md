@@ -4,9 +4,7 @@
 
 Elastic Kubernetes Service (EKS) is a fully managed Kubernetes service from AWS. In this lab, you will work with the AWS command line interface and console, using command line utilities like eksctl and kubectl to launch an EKS cluster, provision a Kubernetes deployment and pod running instances of nginx, and create a LoadBalancer service to expose your application over the internet.
 
-* Course files can be found here: https://github.com/ACloudGuru-Resources/Course_EKS-Basics
-
-Note that us-east-1 can experience capacity issues in certain Availability Zones. Since the AZ numbering (lettering) system differs between AWS accounts we cannot exclude that AZ from the lab steps. If you do experience an UnsupportedAvailabilityZoneException error regarding capacity in a particular zone, you can add the --zones switch to eksctl create cluster and specify three AZs which do not include the under-capacity zone. For example, 
+Note that `us-east-1` can experience capacity issues in certain Availability Zones. Since the AZ numbering (lettering) system differs between AWS accounts we cannot exclude that AZ from the lab steps. If you do experience an UnsupportedAvailabilityZoneException error regarding capacity in a particular zone, you can add the`--zones` switch to `eksctl create cluster` and specify three AZs which do not include the under-capacity zone. For example, 
 
 `eksctl create cluster --name dev --region us-east-1 --zones=us-east-1a,us-east-1b,us-east-1d --nodegroup-name standard-workers --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed`
 
@@ -42,7 +40,7 @@ Note that us-east-1 can experience capacity issues in certain Availability Zones
 
 * In the key pair dialog, select Create a new key pair.
 
-* Give it a Key pair name of "mynvkp".
+* Give it a Key pair name of "ec2-kp".
 
 * Click Download Key Pair, and then Launch Instances.
 
@@ -50,83 +48,54 @@ Note that us-east-1 can experience capacity issues in certain Availability Zones
 
 * Once the instance is fully created, check the checkbox next to it and click Connect at the top of the window.
 
-* In the Connect to your instance dialog, select EC2 Instance Connect (browser-based SSH connection).
+* In the Connect to your instance dialog, select EC2 Instance Connect (browser-based SSH connection). Click Connect.
 
-* Click Connect.
+* In the command line window, check the AWS CLI version: `aws --version` It should be an older version!.
 
-In the command line window, check the AWS CLI version:
-`aws --version`
+* Download v2: `curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"`
 
-It should be an older version.
+* Unzip the file: `unzip awscliv2.zip`
 
-Download v2:
-`curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"`
+* [Stretch] Checkout examples: `aws/dist/examples/*`
 
-Unzip the file:
-`unzip awscliv2.zip`
+* See where the current AWS CLI is installed: `which aws`. It should be `/usr/bin/aws`.
 
-Checkout examples: `aws/dist/examples/*`
+* Update it: `sudo ./aws/install --bin-dir /usr/bin --install-dir /usr/bin/aws-cli --update`
 
-See where the current AWS CLI is installed:
-`which aws`
+* Check the version of AWS CLI: `aws --version`
 
-It should be `/usr/bin/aws`.
+* It should now be updated.
+* Configure the CLI: `aws configure`
 
-Update it:
-`sudo ./aws/install --bin-dir /usr/bin --install-dir /usr/bin/aws-cli --update`
+* For AWS Access Key ID, paste in the access key ID you copied earlier.
+* For AWS Secret Access Key, paste in the secret access key you copied earlier.
 
-Check the version of AWS CLI:
-`aws --version`
+* For Default region name, enter `us-east-1`.
+* For Default output format, enter `json`.
 
-It should now be updated.
+* Download kubectl: `curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl`
 
-Configure the CLI:
-`aws configure`
+* Apply execute permissions to the binary: `chmod +x ./kubectl`
 
-For AWS Access Key ID, paste in the access key ID you copied earlier.
+* Copy the binary to a directory in your path: `mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin`
 
-For AWS Secret Access Key, paste in the secret access key you copied earlier.
+* Ensure kubectl is installed: `kubectl version --short --client`
 
-For Default region name, enter `us-east-1`.
+* Download eksctl: `curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp`
 
-For Default output format, enter `json`.
+* Move the extracted binary to /usr/bin: `sudo mv /tmp/eksctl /usr/bin`
 
-Download kubectl:
-`curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/kubectl`
+* Get the version of eksctl: `eksctl version`
 
-Apply execute permissions to the binary:
-`chmod +x ./kubectl`
-
-Copy the binary to a directory in your path:
-`mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin`
-
-Ensure kubectl is installed:
-`kubectl version --short --client`
-
-Download eksctl:
-`curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp`
-
-Move the extracted binary to /usr/bin:
-`sudo mv /tmp/eksctl /usr/bin`
-
-Get the version of eksctl:
-`eksctl version`
-
-See the options with eksctl:
-`eksctl help`
+* See the options with eksctl: `eksctl help`
 
 ## Step 3: Provision an EKS Cluster
 
-```
-eksctl create cluster --name dev --region us-east-1 --nodegroup-name standard-workers --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed
-```
+#### Provision an EKS cluster with three worker nodes in us-east-1:
+
+`eksctl create cluster --name dev --region us-east-1 --nodegroup-name standard-workers --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed`
 
 ```
-    Provision an EKS cluster with three worker nodes in us-east-1:
-    ```
-    eksctl create cluster --name dev --region us-east-1 --nodegroup-name standard-workers --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4 --managed
-    ```
-
     If your EKS resources can't be deployed due to AWS capacity issues, delete your eksctl-dev-cluster CloudFormation stack and retry the command using the `--zones` parameter and suggested availability zones from the CREATE_FAILED message:
     AWS::EKS::Cluster/ControlPlane: CREATE_FAILED – "Resource handler returned message: \"Cannot create cluster 'dev' because us-east-1e, the targeted availability zone, does not currently have sufficient capacity to support the cluster. Retry and choose from these availability zones: us-east-1a, us-east-1b, us-east-1c, us-east-1d, us-east-1f (Service: Eks, Status Code: 400, Request ID: 21e7e4aa-17a5-4c79-a911-bf86c4e93373)\" (RequestToken: 18b731b0-92a1-a779-9a69-f61e90b97ee1, HandlerErrorCode: InvalidRequest)"
 
@@ -177,55 +146,48 @@ eksctl create cluster --name dev --region us-east-1 --nodegroup-name standard-wo
 
 ## Step 4: Create a Deployment on Your EKS Cluster
 
-```
+* Install Git: `sudo yum install -y git`
 
+* Download the course files: git clone https://github.com/ACloudGuru-Resources/Course_EKS-Basics
 
-    Install Git:
-    sudo yum install -y git
+* Change directory: `cd Course_EKS-Basics`
 
-    Download the course files:
-    git clone https://github.com/ACloudGuru-Resources/Course_EKS-Basics
+* Take a look at the deployment file:
+cat nginx-deployment.yaml
 
-    Change directory:
-    cd Course_EKS-Basics
+Take a look at the service file:
+cat nginx-svc.yaml
 
-    Take a look at the deployment file:
-    cat nginx-deployment.yaml
+Create the service:
+kubectl apply -f ./nginx-svc.yaml
 
-    Take a look at the service file:
-    cat nginx-svc.yaml
+Check its status:
+kubectl get service
 
-    Create the service:
-    kubectl apply -f ./nginx-svc.yaml
+Copy the external DNS hostname of the load balancer, and paste it into a text file, as we'll need it in a minute.
 
-    Check its status:
-    kubectl get service
+Create the deployment:
+kubectl apply -f ./nginx-deployment.yaml
 
-    Copy the external DNS hostname of the load balancer, and paste it into a text file, as we'll need it in a minute.
+Check its status:
+kubectl get deployment
 
-    Create the deployment:
-    kubectl apply -f ./nginx-deployment.yaml
+View the pods:
+kubectl get pod
 
-    Check its status:
-    kubectl get deployment
+View the ReplicaSets:
+kubectl get rs
 
-    View the pods:
-    kubectl get pod
+View the nodes:
+kubectl get node
 
-    View the ReplicaSets:
-    kubectl get rs
+Access the application using the load balancer, replacing <LOAD_BALANCER_DNS_HOSTNAME> with the IP you copied earlier (it might take a couple of minutes to update):
+curl "<LOAD_BALANCER_DNS_HOSTNAME>"
 
-    View the nodes:
-    kubectl get node
+The output should be the HTML for a default Nginx web page.
 
-    Access the application using the load balancer, replacing <LOAD_BALANCER_DNS_HOSTNAME> with the IP you copied earlier (it might take a couple of minutes to update):
-    curl "<LOAD_BALANCER_DNS_HOSTNAME>"
+In a new browser tab, navigate to the same IP, where we should then see the same Nginx web page.
 
-    The output should be the HTML for a default Nginx web page.
-
-    In a new browser tab, navigate to the same IP, where we should then see the same Nginx web page.
-
-```
 
 ## Test the High Availability Features of Your EKS Cluster
 
